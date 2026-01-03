@@ -4,6 +4,19 @@ import { Transaction, TransactionType, ViewType, SavingsState } from './types';
 import { DEFAULT_EXPENSE_CATEGORIES, DEFAULT_INCOME_CATEGORIES, TARGET_SAVINGS_AMOUNT } from './constants';
 
 const App: React.FC = () => {
+  // Simple UUID generator for compatibility
+  const generateId = () => {
+    if (typeof crypto !== 'undefined' && crypto.randomUUID) {
+      return crypto.randomUUID();
+    }
+    // Fallback for non-secure contexts
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+      const r = Math.random() * 16 | 0;
+      const v = c === 'x' ? r : (r & 0x3 | 0x8);
+      return v.toString(16);
+    });
+  };
+
   const [activeView, setActiveView] = useState<ViewType>('tracker');
   const [transactions, setTransactions] = useState<Transaction[]>(() => {
     const saved = localStorage.getItem('mw_transactions');
@@ -93,11 +106,10 @@ const App: React.FC = () => {
         payload
       });
 
-      // 使用 no-cors 模式發送，不等待回應以避免阻塞 UI
+      // 使用 no-cors 模式發送，Content-Type 設為 text/plain 避免 preflight
       fetch(url, {
         method: 'POST',
         mode: 'no-cors',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
       }).catch(e => console.error('Background sync failed:', e));
 
@@ -109,36 +121,30 @@ const App: React.FC = () => {
   // 單項刪除功能
   const removeTransaction = (id: string) => {
     if (confirm('確定要刪除這筆紀錄嗎？')) {
-      setTransactions(prev => {
-        const newTransactions = prev.filter(t => t.id !== id);
-        syncToCloud(newTransactions, expenseCategories, incomeCategories, savings);
-        return newTransactions;
-      });
+      const newTransactions = transactions.filter(t => t.id !== id);
+      setTransactions(newTransactions);
+      syncToCloud(newTransactions, expenseCategories, incomeCategories, savings);
     }
   };
 
   // 批量刪除功能
   const removeTransactions = (ids: string[]) => {
     if (confirm(`確定要刪除選取的 ${ids.length} 筆紀錄嗎？`)) {
-      setTransactions(prev => {
-        const newTransactions = prev.filter(t => !ids.includes(t.id));
-        syncToCloud(newTransactions, expenseCategories, incomeCategories, savings);
-        return newTransactions;
-      });
+      const newTransactions = transactions.filter(t => !ids.includes(t.id));
+      setTransactions(newTransactions);
+      syncToCloud(newTransactions, expenseCategories, incomeCategories, savings);
     }
   };
 
   const addTransaction = (t: Omit<Transaction, 'id' | 'createdAt'>) => {
     const newTransaction: Transaction = {
       ...t,
-      id: crypto.randomUUID(),
+      id: generateId(),
       createdAt: new Date().toISOString()
     };
-    setTransactions(prev => {
-      const newTransactions = [newTransaction, ...prev];
-      syncToCloud(newTransactions, expenseCategories, incomeCategories, savings);
-      return newTransactions;
-    });
+    const newTransactions = [newTransaction, ...transactions];
+    setTransactions(newTransactions);
+    syncToCloud(newTransactions, expenseCategories, incomeCategories, savings);
   };
 
   const toggleSavingsDay = (day: number) => {
@@ -175,9 +181,6 @@ const App: React.FC = () => {
       await fetch(url, {
         method: 'POST',
         mode: 'no-cors', // GAS web app requires no-cors for simple requests from browser
-        headers: {
-          'Content-Type': 'application/json'
-        },
         body: JSON.stringify(payload)
       });
 
