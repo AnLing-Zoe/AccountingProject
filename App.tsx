@@ -75,13 +75,13 @@ const App: React.FC = () => {
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center gap-3">
-              <div className="w-9 h-9 bg-[#C9A690] rounded-lg flex items-center justify-center text-white font-black text-xl shadow-lg shadow-[#C9A690]/30">M</div>
-              <h1 className="text-xl font-black text-gray-800 tracking-tight hidden sm:block">小橘記帳</h1>
+              <div className="w-9 h-9 bg-[#C9A690] rounded-lg flex items-center justify-center text-white font-black text-xl shadow-lg shadow-[#C9A690]/30">$</div>
+              <h1 className="text-xl font-black text-[#443730] tracking-tight hidden sm:block">Zoe個人記帳</h1>
             </div>
 
             <div className="flex gap-1 sm:gap-4 overflow-x-auto no-scrollbar">
-              <NavItem active={activeView === 'tracker'} onClick={() => setActiveView('tracker')} icon="✏️" label="收支記錄" />
-              <NavItem active={activeView === 'calendar'} onClick={() => setActiveView('calendar')} icon="📅" label="月曆視圖" />
+              <NavItem active={activeView === 'tracker'} onClick={() => setActiveView('tracker')} icon="✏️" label="收支紀錄" />
+              <NavItem active={activeView === 'calendar'} onClick={() => setActiveView('calendar')} icon="📅" label="月曆總覽" />
               <NavItem active={activeView === 'savings'} onClick={() => setActiveView('savings')} icon="💰" label="365挑戰" />
             </div>
           </div>
@@ -214,7 +214,7 @@ const DailyTracker: React.FC<{
     <div className="space-y-8 max-w-2xl mx-auto">
       <div className="bg-white rounded-[2rem] p-6 md:p-8 shadow-sm border border-[#FFEECF] animate-in fade-in slide-in-from-bottom-4 duration-500">
         <header className="mb-6 flex items-center justify-between">
-          <h2 className="text-2xl font-black text-gray-800 tracking-tight">帳務錄入</h2>
+          <h2 className="text-2xl font-black text-[#443730] tracking-tight">收支紀錄</h2>
           <button
             onClick={() => setIsEditingCats(!isEditingCats)}
             className="text-sm font-bold text-[#C9A690] bg-[#FFEECF] px-3 py-1.5 rounded-full hover:bg-[#C9A690]/10 transition-colors"
@@ -254,7 +254,7 @@ const DailyTracker: React.FC<{
             <button
               type="button"
               onClick={() => setType('expense')}
-              className={`flex-1 py-3 px-4 rounded-xl text-sm font-black transition-all ${type === 'expense' ? 'bg-[#6A041D] text-white shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
+              className={`flex-1 py-3 px-4 rounded-xl text-sm font-black transition-all ${type === 'expense' ? 'bg-[#550C18] text-white shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
             >
               💸 支出
             </button>
@@ -269,24 +269,24 @@ const DailyTracker: React.FC<{
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-1.5">
-              <label className="text-xs font-black text-gray-500 ml-1">發生日期</label>
+              <label className="text-xs font-black text-[#443730] ml-1">日期</label>
               <div className="relative">
                 <input
                   type="date"
                   value={date}
                   onChange={(e) => setDate(e.target.value)}
                   style={{ colorScheme: 'light' }}
-                  className="w-full p-4 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-[#C9A690] focus:bg-white outline-none font-bold text-gray-800 block appearance-none [&::-webkit-calendar-picker-indicator]:opacity-100 [&::-webkit-calendar-picker-indicator]:bg-[#C9A690] [&::-webkit-calendar-picker-indicator]:p-1.5 [&::-webkit-calendar-picker-indicator]:rounded-lg [&::-webkit-calendar-picker-indicator]:cursor-pointer"
+                  className="w-full p-4 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-[#C9A690] focus:bg-white outline-none font-bold text-[#443730] block appearance-none [&::-webkit-calendar-picker-indicator]:opacity-100 [&::-webkit-calendar-picker-indicator]:bg-[#C9A690] [&::-webkit-calendar-picker-indicator]:p-1.5 [&::-webkit-calendar-picker-indicator]:rounded-lg [&::-webkit-calendar-picker-indicator]:cursor-pointer"
                 />
               </div>
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-xs font-black text-gray-500 ml-1">項目類別</label>
+              <label className="text-xs font-black text-[#443730] ml-1">項目</label>
               <select
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
-                className="w-full p-4 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-[#C9A690] focus:bg-white outline-none appearance-none font-bold text-gray-800 cursor-pointer"
+                className="w-full p-4 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-[#C9A690] focus:bg-white outline-none appearance-none font-bold text-[#443730] cursor-pointer"
               >
                 <option value="" disabled>請選擇</option>
                 {currentCats.map(cat => (
@@ -297,23 +297,23 @@ const DailyTracker: React.FC<{
           </div>
 
           <div className="space-y-1.5">
-            <label className="text-xs font-black text-gray-500 ml-1">金額數字</label>
+            <label className="text-xs font-black text-[#443730] ml-1">金額</label>
             <div className="relative">
-              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-2xl font-black text-gray-400">$</span>
+              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-2xl font-black text-[#443730]">$</span>
               <input
                 type="number"
                 placeholder="0.00"
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
-                className="w-full pl-10 p-5 text-4xl font-black rounded-2xl bg-gray-50 border-2 border-transparent focus:border-[#C9A690] focus:bg-white outline-none text-gray-900"
+                className="w-full pl-10 p-5 text-4xl font-black rounded-2xl bg-gray-50 border-2 border-transparent focus:border-[#C9A690] focus:bg-white outline-none text-[#443730]"
               />
             </div>
           </div>
 
           <div className="space-y-1.5">
-            <label className="text-xs font-black text-gray-500 ml-1">備註資訊</label>
+            <label className="text-xs font-black text-[#443730] ml-1">備註</label>
             <textarea
-              placeholder="紀錄您的心情或細項..."
+              placeholder="細項..."
               value={note}
               onChange={(e) => setNote(e.target.value)}
               className="w-full p-4 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-[#C9A690] focus:bg-white outline-none min-h-[80px] font-bold text-gray-800 resize-none"
@@ -322,10 +322,10 @@ const DailyTracker: React.FC<{
 
           <button
             type="submit"
-            className={`w-full py-5 rounded-2xl text-white font-black text-xl shadow-xl transition-all active:scale-95 ${type === 'expense' ? 'bg-[#6A041D] hover:opacity-90 shadow-[#6A041D]/20' : 'bg-[#357266] hover:opacity-90 shadow-[#357266]/20'
+            className={`w-full py-5 rounded-2xl text-white font-black text-xl shadow-xl transition-all active:scale-95 ${type === 'expense' ? 'bg-[#550C18] hover:opacity-90 shadow-[#550C18]/20' : 'bg-[#357266] hover:opacity-90 shadow-[#357266]/20'
               }`}
           >
-            儲存紀錄
+            儲存
           </button>
         </form>
       </div>
@@ -334,7 +334,7 @@ const DailyTracker: React.FC<{
       <div className="bg-white rounded-[2rem] p-6 md:p-8 shadow-sm border border-[#FFEECF]">
         <header className="mb-6 flex items-center justify-between">
           <div>
-            <h3 className="text-xl font-black text-gray-800">今日流水帳</h3>
+            <h3 className="text-xl font-black text-[#443730]">今日帳務</h3>
             <p className="text-sm text-gray-400 font-bold mt-1">系統錄入紀錄</p>
           </div>
           <div className="flex items-center gap-2">
@@ -353,7 +353,7 @@ const DailyTracker: React.FC<{
         {todayOperations.length === 0 ? (
           <div className="text-center py-12 bg-gray-50/50 rounded-2xl border-2 border-dashed border-gray-100">
             <span className="text-4xl block mb-2 opacity-30">📒</span>
-            <p className="text-gray-400 font-bold text-sm">今日尚無流水帳紀錄</p>
+            <p className="text-gray-400 font-bold text-sm">今日尚無紀錄</p>
           </div>
         ) : (
           <div className="space-y-3">
@@ -368,11 +368,11 @@ const DailyTracker: React.FC<{
                       className="w-5 h-5 rounded-lg border-2 border-gray-300 text-[#C9A690] focus:ring-[#C9A690] cursor-pointer accent-[#C9A690]"
                     />
                   </div>
-                  <div className={`w-12 h-12 rounded-2xl flex items-center justify-center font-black text-white text-xl shadow-sm ${t.type === 'expense' ? 'bg-[#6A041D]' : 'bg-[#357266]'}`}>
+                  <div className={`w-12 h-12 rounded-2xl flex items-center justify-center font-black text-white text-xl shadow-sm ${t.type === 'expense' ? 'bg-[#550C18]' : 'bg-[#357266]'}`}>
                     {t.type === 'expense' ? '−' : '+'}
                   </div>
                   <div>
-                    <div className="font-black text-gray-800 flex items-center gap-2">
+                    <div className="font-black text-[#443730] flex items-center gap-2">
                       {t.category}
                       <span className="text-[10px] font-bold text-gray-300 bg-white px-1.5 py-0.5 rounded border border-gray-100">
                         {new Date(t.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
@@ -384,7 +384,7 @@ const DailyTracker: React.FC<{
                   </div>
                 </div>
                 <div className="flex items-center gap-4">
-                  <div className={`text-xl font-black ${t.type === 'expense' ? 'text-[#6A041D]' : 'text-[#357266]'}`}>
+                  <div className={`text-xl font-black ${t.type === 'expense' ? 'text-[#550C18]' : 'text-[#357266]'}`}>
                     {t.type === 'expense' ? '-' : '+'}${t.amount.toLocaleString()}
                   </div>
                   <button
@@ -462,7 +462,7 @@ const MonthlyCalendar: React.FC<{ transactions: Transaction[]; onDelete: (id: st
               <select
                 value={currentYear}
                 onChange={handleYearChange}
-                className="appearance-none bg-[#FFEECF] border-2 border-[#C9A690]/20 text-gray-800 font-black text-2xl py-1 px-4 pr-10 rounded-xl focus:border-[#C9A690] outline-none cursor-pointer"
+                className="appearance-none bg-[#FFEECF] border-2 border-[#C9A690]/20 text-[#443730] font-black text-2xl py-1 px-4 pr-10 rounded-xl focus:border-[#C9A690] outline-none cursor-pointer"
               >
                 {years.map(y => <option key={y} value={y}>{y}年</option>)}
               </select>
@@ -472,14 +472,14 @@ const MonthlyCalendar: React.FC<{ transactions: Transaction[]; onDelete: (id: st
               <select
                 value={currentMonth}
                 onChange={handleMonthChange}
-                className="appearance-none bg-[#FFEECF] border-2 border-[#C9A690]/20 text-gray-800 font-black text-2xl py-1 px-4 pr-10 rounded-xl focus:border-[#C9A690] outline-none cursor-pointer"
+                className="appearance-none bg-[#FFEECF] border-2 border-[#C9A690]/20 text-[#443730] font-black text-2xl py-1 px-4 pr-10 rounded-xl focus:border-[#C9A690] outline-none cursor-pointer"
               >
                 {months.map(m => <option key={m} value={m}>{m + 1}月</option>)}
               </select>
               <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-[#C9A690]">▼</div>
             </div>
           </div>
-          <p className="text-[#C9A690] font-bold text-xs tracking-widest mt-1">單月結算月曆</p>
+          <p className="text-[#C9A690] font-bold text-xs tracking-widest mt-1">當月結算</p>
         </div>
         <div className="flex gap-4">
           <button
@@ -510,15 +510,15 @@ const MonthlyCalendar: React.FC<{ transactions: Transaction[]; onDelete: (id: st
             disabled={day === null}
             onClick={() => day !== null && setSelectedDay(day)}
             className={`aspect-square sm:aspect-auto sm:min-h-[100px] border rounded-2xl p-2 transition-all flex flex-col items-center justify-center sm:items-start sm:justify-start group ${day === null
-                ? 'bg-transparent border-transparent cursor-default'
-                : 'bg-gray-50/50 border-gray-100 hover:border-[#C9A690] hover:shadow-xl hover:-translate-y-1 active:scale-95'
+              ? 'bg-transparent border-transparent cursor-default'
+              : 'bg-gray-50/50 border-gray-100 hover:border-[#C9A690] hover:shadow-xl hover:-translate-y-1 active:scale-95'
               } ${selectedDay === day ? 'ring-4 ring-[#FFEECF] border-[#C9A690]' : ''}`}
           >
             {day && (
               <>
-                <div className={`text-sm font-black mb-1 ${monthData[day] !== undefined ? 'text-gray-800' : 'text-gray-300'}`}>{day}</div>
+                <div className={`text-sm font-black mb-1 ${monthData[day] !== undefined ? 'text-[#443730]' : 'text-gray-300'}`}>{day}</div>
                 {monthData[day] !== undefined && (
-                  <div className={`text-[10px] sm:text-xs font-black truncate px-1.5 py-0.5 rounded-lg w-full text-center ${monthData[day] >= 0 ? 'text-white bg-[#357266]' : 'text-white bg-[#6A041D]'
+                  <div className={`text-[10px] sm:text-xs font-black truncate px-1.5 py-0.5 rounded-lg w-full text-center ${monthData[day] >= 0 ? 'text-white bg-[#357266]' : 'text-white bg-[#550C18]'
                     }`}>
                     {monthData[day] > 0 ? '+' : ''}{monthData[day].toLocaleString()}
                   </div>
@@ -538,12 +538,12 @@ const MonthlyCalendar: React.FC<{ transactions: Transaction[]; onDelete: (id: st
           >
             <div className="p-8 pb-4 flex items-center justify-between border-b border-[#FFEECF]">
               <div>
-                <h3 className="text-2xl font-black text-gray-800">{currentYear}年 {currentMonth + 1}月 {selectedDay}日</h3>
+                <h3 className="text-2xl font-black text-[#443730]">{currentYear}年 {currentMonth + 1}月 {selectedDay}日</h3>
                 <p className="text-xs font-black text-gray-400 uppercase tracking-widest">當日詳細明細</p>
               </div>
               <button
                 onClick={() => setSelectedDay(null)}
-                className="w-12 h-12 bg-gray-100 rounded-2xl flex items-center justify-center hover:bg-[#6A041D] hover:text-white transition-all text-xl"
+                className="w-12 h-12 bg-gray-100 rounded-2xl flex items-center justify-center hover:bg-[#550C18] hover:text-white transition-all text-xl"
               >✕</button>
             </div>
 
@@ -554,16 +554,16 @@ const MonthlyCalendar: React.FC<{ transactions: Transaction[]; onDelete: (id: st
                 dayTransactions.map(t => (
                   <div key={t.id} className="flex items-center justify-between p-5 bg-gray-50 rounded-[1.5rem] border border-transparent hover:border-[#C9A690]/20 transition-all">
                     <div className="flex items-center gap-4">
-                      <div className={`w-12 h-12 rounded-2xl flex items-center justify-center font-black text-white shadow-sm ${t.type === 'expense' ? 'bg-[#6A041D]' : 'bg-[#357266]'}`}>
+                      <div className={`w-12 h-12 rounded-2xl flex items-center justify-center font-black text-white shadow-sm ${t.type === 'expense' ? 'bg-[#550C18]' : 'bg-[#357266]'}`}>
                         {t.type === 'expense' ? '−' : '+'}
                       </div>
                       <div>
-                        <div className="font-black text-gray-800 text-lg">{t.category}</div>
+                        <div className="font-black text-[#443730] text-lg">{t.category}</div>
                         <div className="text-sm font-bold text-gray-400">{t.note || '無備註'}</div>
                       </div>
                     </div>
                     <div className="flex items-center gap-4">
-                      <div className={`text-xl font-black ${t.type === 'expense' ? 'text-[#6A041D]' : 'text-[#357266]'}`}>
+                      <div className={`text-xl font-black ${t.type === 'expense' ? 'text-[#550C18]' : 'text-[#357266]'}`}>
                         {t.type === 'expense' ? '-' : '+'}${t.amount.toLocaleString()}
                       </div>
                       <button type="button" onClick={() => onDelete(t.id)} className="text-gray-300 hover:text-red-500 transition-colors p-2" title="刪除">🗑️</button>
@@ -573,7 +573,7 @@ const MonthlyCalendar: React.FC<{ transactions: Transaction[]; onDelete: (id: st
               )}
             </div>
 
-            <div className={`p-8 border-t flex justify-between items-center ${(monthData[selectedDay] || 0) >= 0 ? 'bg-[#357266]' : 'bg-[#6A041D]'}`}>
+            <div className={`p-8 border-t flex justify-between items-center ${(monthData[selectedDay] || 0) >= 0 ? 'bg-[#357266]' : 'bg-[#550C18]'}`}>
               <span className="font-black text-white uppercase text-sm tracking-wider">今日結算盈虧</span>
               <span className="text-3xl font-black text-white">
                 ${(monthData[selectedDay] || 0).toLocaleString()}
@@ -611,7 +611,7 @@ const SavingsChallenge: React.FC<{ savings: SavingsState; onToggle: (day: number
             />
           </svg>
           <div className="absolute inset-0 flex flex-col items-center justify-center">
-            <span className="text-5xl font-black text-gray-900 tracking-tighter">{Math.round(progressPercent)}%</span>
+            <span className="text-5xl font-black text-[#443730] tracking-tighter">{Math.round(progressPercent)}%</span>
             <span className="text-[11px] text-[#C9A690] font-black tracking-widest mt-1">累積進度</span>
             <span className="text-[10px] text-gray-400 font-bold mt-1 text-center">
               {currentTotal.toLocaleString()} / {TARGET_SAVINGS_AMOUNT.toLocaleString()}
@@ -627,7 +627,7 @@ const SavingsChallenge: React.FC<{ savings: SavingsState; onToggle: (day: number
             </div>
             <div className="p-6 bg-[#FFEECF] rounded-[2rem] border border-[#C9A690]/20 flex flex-col justify-center items-center text-center">
               <p className="text-[#C9A690] text-xs font-black uppercase tracking-widest mb-1">目標總額</p>
-              <p className="text-3xl font-black text-gray-800 tracking-tight">${TARGET_SAVINGS_AMOUNT.toLocaleString()}</p>
+              <p className="text-3xl font-black text-[#443730] tracking-tight">${TARGET_SAVINGS_AMOUNT.toLocaleString()}</p>
             </div>
           </div>
           <div className="p-5 bg-gradient-to-r from-[#C9A690] to-[#FFEECF] rounded-3xl shadow-lg">
@@ -646,8 +646,8 @@ const SavingsChallenge: React.FC<{ savings: SavingsState; onToggle: (day: number
       <div className="bg-white rounded-[2.5rem] p-6 md:p-10 shadow-sm border border-[#FFEECF]">
         <header className="mb-8 flex items-center justify-between px-2">
           <div>
-            <h3 className="text-2xl font-black text-gray-800">365 存錢挑戰表</h3>
-            <p className="text-gray-400 text-xs font-bold uppercase tracking-widest mt-1">點擊每日數字標記完成</p>
+            <h3 className="text-2xl font-black text-[#443730]">365 存錢挑戰表</h3>
+            <p className="text-gray-400 text-xs font-bold uppercase tracking-widest mt-1">點擊即可標記完成</p>
           </div>
           <div className="hidden sm:flex gap-1.5 items-center bg-[#FFEECF] px-3 py-1.5 rounded-full">
             <div className="w-3 h-3 bg-[#C9A690] rounded-full"></div>
@@ -662,8 +662,8 @@ const SavingsChallenge: React.FC<{ savings: SavingsState; onToggle: (day: number
                 key={day}
                 onClick={() => onToggle(day)}
                 className={`aspect-square flex items-center justify-center text-[10px] md:text-xs font-black rounded-xl transition-all ${isDone
-                    ? 'bg-[#C9A690] text-white shadow-md shadow-[#C9A690]/30 scale-95 border-b-4 border-[#C9A690]/80'
-                    : 'bg-gray-50 text-gray-400 border border-gray-100 hover:border-[#C9A690]/40 hover:bg-[#FFEECF]/30'
+                  ? 'bg-[#C9A690] text-white shadow-md shadow-[#C9A690]/30 scale-95 border-b-4 border-[#C9A690]/80'
+                  : 'bg-gray-50 text-gray-400 border border-gray-100 hover:border-[#C9A690]/40 hover:bg-[#FFEECF]/30'
                   }`}
               >
                 {day}
