@@ -87,20 +87,21 @@ function getTransactions(ss) {
     const maxCols = sheet.getMaxColumns();
     const lastCol = sheet.getLastColumn();
 
-    // Read up to 7 columns if possible, but limit to actual keys
+    // Read up to 7 columns
     const readCols = Math.min(lastCol, 7);
     if (readCols < 1) return [];
 
-    const values = sheet.getRange(2, 1, lastRow - 1, readCols).getValues();
+    // Use getDisplayValues to preserve text like "7-11" as "7-11" instead of Date
+    const values = sheet.getRange(2, 1, lastRow - 1, readCols).getDisplayValues();
 
     return values.map(row => {
-        // Legacy (6 cols): [錄入時間, 帳目時間, 分類, 類別, 金額, 備註] -> row[2] is '支出'/'收入'
-        // New (7 cols): [ID, 錄入時間, 帳目時間, 分類, 類別, 金額, 備註] -> row[3] is '支出'/'收入'
+        // [ID, 錄入時間, 帳目時間, 分類, 類別, 金額, 備註] (New Format)
+
+        // Heuristic: Check if row[3] is type
+        // row values are all Strings now.
+        const isNewFormat = row.length >= 7 || (row.length >= 4 && (row[3] === '支出' || row[3] === '收入'));
 
         let id, createdAt, date, type, category, amount, note;
-
-        // Heuristic: Check if row[3] is type (New)
-        const isNewFormat = row.length >= 7 || (row.length >= 4 && (row[3] === '支出' || row[3] === '收入'));
 
         if (isNewFormat) {
             id = row[0];
@@ -108,7 +109,8 @@ function getTransactions(ss) {
             date = row[2];
             type = row[3] === '支出' ? 'expense' : 'income';
             category = row[4];
-            amount = Number(row[5]);
+            // Remove commas for amount parsing
+            amount = Number(row[5].replace(/,/g, ''));
             note = row[6];
         } else {
             // Legacy
@@ -117,22 +119,31 @@ function getTransactions(ss) {
             date = row[1];
             type = row[2] === '支出' ? 'expense' : 'income';
             category = row[3];
-            amount = Number(row[4]);
+            amount = Number(row[4].replace(/,/g, ''));
             note = row[5];
         }
 
-        // Date Parsing
+        // Date Parsing (from String)
+        // GAS getDisplayValues depends on Sheet Locale format.
+        // Assuming "yyyy/MM/dd HH:mm" or similar standard formats.
+        // We will try our best to keep them as strings or parse if needed by frontend.
+        // Frontend expects ISO string for createdAt.
+        // If display value is "2024/01/01 12:00", new Date() works usually.
+
         try {
-            if (createdAt instanceof Date) createdAt = createdAt.toISOString();
-            else if (typeof createdAt === 'string' && createdAt) createdAt = new Date(createdAt.replace(/\//g, '-')).toISOString();
+            if (createdAt) {
+                const parsedCo = new Date(createdAt.replace(/\//g, '-'));
+                if (!isNaN(parsedCo)) createdAt = parsedCo.toISOString();
+            }
         } catch (e) { }
 
         try {
-            if (date instanceof Date) date = Utilities.formatDate(date, Session.getScriptTimeZone(), 'yyyy-MM-dd');
-            else if (typeof date === 'string') date = date.replace(/\//g, '-');
+            if (date) {
+                date = date.replace(/\//g, '-');
+            }
         } catch (e) { }
 
-        return { id, createdAt, date, type, category, amount, note };
+        return { id, createdAt, date, type, category, amount: isNaN(amount) ? 0 : amount, note };
     });
 }
 
@@ -203,7 +214,16 @@ function updateTransactions(ss, transactions) {
             t.amount,
             t.note || ''
         ]);
-        sheet.getRange(2, 1, rows.length, 7).setValues(rows);
+
+        const range = sheet.getRange(2, 1, rows.length, 7);
+        range.setValues(rows);
+
+        // Force Text Format for ID (1), Category (5), Note (7)
+        // Force Number Format for Amount (6) just in case
+        sheet.getRange(2, 1, rows.length, 1).setNumberFormat('@'); // ID
+        sheet.getRange(2, 5, rows.length, 1).setNumberFormat('@'); // Category
+        sheet.getRange(2, 7, rows.length, 1).setNumberFormat('@'); // Note
+
     }
 }
 
