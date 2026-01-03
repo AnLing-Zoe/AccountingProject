@@ -1,20 +1,41 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# Accounting Project
 
-# Run and deploy your AI Studio app
+A personal finance tracker built with React, TypeScript, and Vite.
 
-This contains everything you need to run your app locally.
+## Getting Started
 
-View your app in AI Studio: https://ai.studio/apps/drive/1VY331AfhgOHjgVwK9bD9yE1lRWeLHudd
+### Prerequisites
 
-## Run Locally
+*   Node.js (v18 or higher recommended)
+*   npm or yarn
 
-**Prerequisites:**  Node.js
+### Installation
 
+1.  Clone the repository:
+    ```bash
+    git clone https://github.com/your-username/AccountingProject.git
+    ```
+2.  Install dependencies:
+    ```bash
+    npm install
+    ```
+3.  Start the development server:
+    ```bash
+    npm run dev
+    ```
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+## Scripts
+
+-   `npm run dev`: Starts the development server.
+-   `npm run build`: Builds the app for production.
+-   `npm run preview`: Locally preview the production build.
+
+## Deployment
+
+This project is configured to automatically deploy to GitHub Pages using GitHub Actions.
+
+1.  Push changes to the `main` branch.
+2.  Go to the repository **Settings** -> **Pages**.
+3.  Ensure the source is set to **GitHub Actions**.
+4.  The deployment workflow will run automatically and the live link will be available in the Actions tab or the deployment environment section.
+
