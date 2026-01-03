@@ -1,4 +1,4 @@
-
+//這邊基本上也廢棄了
 export const DEFAULT_EXPENSE_CATEGORIES = ['餐飲', '生活', '車用', '意外花費', '繳費', '股票'];
 export const DEFAULT_INCOME_CATEGORIES = ['薪水', '兼職', '意外之財', '利息/回饋'];
 
