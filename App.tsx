@@ -34,6 +34,40 @@ const App: React.FC = () => {
     localStorage.setItem('mw_income_cats', JSON.stringify(incomeCategories));
   }, [savings, expenseCategories, incomeCategories]);
 
+  // Load data from cloud on start
+  useEffect(() => {
+    const url = import.meta.env.VITE_GOOGLE_APP_SCRIPT_URL;
+    if (!url) return;
+
+    const fetchData = async () => {
+      try {
+        console.log('☁️ Fetching data from Cloud...');
+        const res = await fetch(url + '?action=get'); // GAS doGet doesn't strictly read params but good for caching prevention or intent
+        if (!res.ok) throw new Error('Network response was not ok');
+
+        const data = await res.json();
+        console.log('☁️ Data received:', data);
+
+        if (data.transactions) {
+          setTransactions(data.transactions);
+        }
+        if (data.expenseCategories) {
+          setExpenseCategories(data.expenseCategories);
+        }
+        if (data.incomeCategories) {
+          setIncomeCategories(data.incomeCategories);
+        }
+        if (data.savings) {
+          setSavings({ completedDays: data.savings.completedDays || [] });
+        }
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   // 獨立出 Sync 函數以便調用
   const syncToCloud = async (
     currentTransactions: Transaction[],
@@ -52,6 +86,12 @@ const App: React.FC = () => {
         transactions: currentTransactions,
         savings: currentSavings
       };
+
+      console.log('☁️ Syncing to Cloud...', {
+        url,
+        txCount: currentTransactions.length,
+        payload
+      });
 
       // 使用 no-cors 模式發送，不等待回應以避免阻塞 UI
       fetch(url, {
@@ -296,8 +336,18 @@ const DailyTracker: React.FC<{
 
   const todayOperations = useMemo(() => {
     const now = new Date();
-    const today = now.toISOString().split('T')[0];
-    return transactions.filter(t => t.createdAt.split('T')[0] === today);
+    const currentYear = now.getFullYear();
+    const currentMonth = now.getMonth();
+    const currentDate = now.getDate();
+
+    return transactions
+      .filter(t => {
+        const tDate = new Date(t.createdAt);
+        return tDate.getFullYear() === currentYear &&
+          tDate.getMonth() === currentMonth &&
+          tDate.getDate() === currentDate;
+      })
+      .slice(0, 10);
   }, [transactions]);
 
   return (
@@ -477,14 +527,6 @@ const DailyTracker: React.FC<{
                   <div className={`text-xl font-black ${t.type === 'expense' ? 'text-[#550C18]' : 'text-[#357266]'}`}>
                     {t.type === 'expense' ? '-' : '+'}${t.amount.toLocaleString()}
                   </div>
-                  <button
-                    type="button"
-                    onClick={() => onDelete(t.id)}
-                    className="text-gray-300 hover:text-red-500 transition-all p-2 rounded-xl hover:bg-red-50 border border-transparent hover:border-red-100"
-                    title="刪除"
-                  >
-                    🗑️
-                  </button>
                 </div>
               </div>
             ))}
