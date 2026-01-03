@@ -2,6 +2,7 @@
   "name": "moneywise---personal-finance-tracker",
   "private": true,
   "version": "0.0.0",
+  "homepage": "https://AnLing-Zoe.github.io/AccountingProject",
   "type": "module",
   "scripts": {
     "dev": "vite",

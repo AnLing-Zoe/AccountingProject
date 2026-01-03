@@ -1,41 +1,51 @@
-# Accounting Project
+# MoneyWise - Personal Finance Tracker
 
-A personal finance tracker built with React, TypeScript, and Vite.
+Account management project developed with React + TypeScript + Vite.
+
+## Features
+
+- **Tech Stack**: React 19, TypeScript, Vite
+- **Deployment**: Automatic deployment to GitHub Pages via GitHub Actions
 
 ## Getting Started
 
 ### Prerequisites
 
-*   Node.js (v18 or higher recommended)
-*   npm or yarn
+- Node.js (v20+ recommended)
+- npm
 
 ### Installation
 
-1.  Clone the repository:
-    ```bash
-    git clone https://github.com/your-username/AccountingProject.git
-    ```
-2.  Install dependencies:
-    ```bash
-    npm install
-    ```
-3.  Start the development server:
-    ```bash
-    npm run dev
-    ```
+1. Clone the repository
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
 
-## Scripts
+### Development
 
--   `npm run dev`: Starts the development server.
--   `npm run build`: Builds the app for production.
--   `npm run preview`: Locally preview the production build.
+Start the development server:
+
+```bash
+npm run dev
+```
 
 ## Deployment
 
-This project is configured to automatically deploy to GitHub Pages using GitHub Actions.
+The project is configured to automatically deploy to GitHub Pages when pushing to the `main` branch.
 
-1.  Push changes to the `main` branch.
-2.  Go to the repository **Settings** -> **Pages**.
-3.  Ensure the source is set to **GitHub Actions**.
-4.  The deployment workflow will run automatically and the live link will be available in the Actions tab or the deployment environment section.
+### Manual Build
 
+To build the project locally:
+
+```bash
+npm run build
+```
+
+The output will be in the `dist` folder.
+
+## Project Structure
+
+- `src/`: Source code
+- `.github/workflows/`: GitHub Actions configurations
+- `dist/`: Build output (not versioned)
