@@ -34,17 +34,57 @@ const App: React.FC = () => {
     localStorage.setItem('mw_income_cats', JSON.stringify(incomeCategories));
   }, [savings, expenseCategories, incomeCategories]);
 
+  // 獨立出 Sync 函數以便調用
+  const syncToCloud = async (
+    currentTransactions: Transaction[],
+    currentExpenseCats: string[],
+    currentIncomeCats: string[],
+    currentSavings: SavingsState
+  ) => {
+    const url = import.meta.env.VITE_GOOGLE_APP_SCRIPT_URL;
+    if (!url) return; // Silent return if not configured
+
+    try {
+      const payload = {
+        action: 'sync',
+        expenseCategories: currentExpenseCats,
+        incomeCategories: currentIncomeCats,
+        transactions: currentTransactions,
+        savings: currentSavings
+      };
+
+      // 使用 no-cors 模式發送，不等待回應以避免阻塞 UI
+      fetch(url, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      }).catch(e => console.error('Background sync failed:', e));
+
+    } catch (error) {
+      console.error('Sync failed:', error);
+    }
+  };
+
   // 單項刪除功能
   const removeTransaction = (id: string) => {
     if (confirm('確定要刪除這筆紀錄嗎？')) {
-      setTransactions(prev => prev.filter(t => t.id !== id));
+      setTransactions(prev => {
+        const newTransactions = prev.filter(t => t.id !== id);
+        syncToCloud(newTransactions, expenseCategories, incomeCategories, savings);
+        return newTransactions;
+      });
     }
   };
 
   // 批量刪除功能
   const removeTransactions = (ids: string[]) => {
     if (confirm(`確定要刪除選取的 ${ids.length} 筆紀錄嗎？`)) {
-      setTransactions(prev => prev.filter(t => !ids.includes(t.id)));
+      setTransactions(prev => {
+        const newTransactions = prev.filter(t => !ids.includes(t.id));
+        syncToCloud(newTransactions, expenseCategories, incomeCategories, savings);
+        return newTransactions;
+      });
     }
   };
 
@@ -54,7 +94,11 @@ const App: React.FC = () => {
       id: crypto.randomUUID(),
       createdAt: new Date().toISOString()
     };
-    setTransactions(prev => [newTransaction, ...prev]);
+    setTransactions(prev => {
+      const newTransactions = [newTransaction, ...prev];
+      syncToCloud(newTransactions, expenseCategories, incomeCategories, savings);
+      return newTransactions;
+    });
   };
 
   const toggleSavingsDay = (day: number) => {
@@ -68,6 +112,8 @@ const App: React.FC = () => {
     });
   };
 
+
+
   const handleSyncToCloud = async () => {
     const url = import.meta.env.VITE_GOOGLE_APP_SCRIPT_URL;
     if (!url) {
@@ -75,7 +121,7 @@ const App: React.FC = () => {
       return;
     }
 
-    if (!confirm('確定要將資料同步至 Google Sheet 嗎？這將會覆蓋 Sheet 上的舊資料。')) return;
+    if (!confirm('即將覆蓋 Sheet 上的舊資料。')) return;
 
     try {
       const payload = {

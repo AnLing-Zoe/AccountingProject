@@ -30,7 +30,7 @@ function updateCategories(ss, expenseCats, incomeCats) {
     let sheet = ss.getSheetByName('分類');
     if (!sheet) {
         sheet = ss.insertSheet('分類');
-        sheet.appendRow(['類型', '類別']); // Header
+        sheet.appendRow(['分類', '類別']); // Header: Classification, Category
     }
 
     // Clear content except header
@@ -64,16 +64,17 @@ function updateTransactions(ss, transactions) {
     }
 
     if (transactions && transactions.length > 0) {
-        // Sort by date desc (optional, but good for viewing)
+        // Sort by date desc
         transactions.sort((a, b) => new Date(b.date) - new Date(a.date));
 
+        // Map to columns: 錄入時間, 帳目時間, 分類, 類別, 金額, 備註
         const rows = transactions.map(t => [
-            t.createdAt, // 錄入時間
-            t.date,      // 帳目時間
+            t.createdAt,                  // 錄入時間 (System Time)
+            t.date,                       // 帳目時間 (Selected Date)
             t.type === 'expense' ? '支出' : '收入', // 分類
-            t.category,  // 類別
-            t.amount,    // 金額
-            t.note || '' // 備註
+            t.category,                   // 類別
+            t.amount,                     // 金額
+            t.note || ''                  // 備註
         ]);
         sheet.getRange(2, 1, rows.length, 6).setValues(rows);
     }
@@ -83,22 +84,27 @@ function updateSavings(ss, savings) {
     let sheet = ss.getSheetByName('365實行計畫');
     if (!sheet) {
         sheet = ss.insertSheet('365實行計畫');
-        sheet.appendRow(['紀錄時間', '金額', '已選取']); // Header
+        sheet.appendRow(['紀錄時間', '金額']); // Header (User removed IsSelected)
     }
 
     // Clear content except header
     if (sheet.getLastRow() > 1) {
-        sheet.getRange(2, 1, sheet.getLastRow() - 1, 3).clearContent();
+        // Note: Use getLastColumn or hardcode 2 based on header
+        sheet.getRange(2, 1, sheet.getLastRow() - 1, 2).clearContent();
     }
 
     if (savings && savings.completedDays && savings.completedDays.length > 0) {
         const now = new Date().toISOString();
-        // We'll list each completed day as a row
+
+        // Map to columns: 紀錄時間, 金額
         const rows = savings.completedDays.sort((a, b) => a - b).map(day => [
-            now,  // 紀錄時間 (Using sync time as record time since local storage doesn't track when it was clicked)
-            day,  // 金額 (Day number equals amount)
-            day   // 已選取 (Same as day/amount)
+            now,  // 紀錄時間
+            day   // 金額 (Day number)
         ]);
-        sheet.getRange(2, 1, rows.length, 3).setValues(rows);
+
+        // Check if we have rows to insert to avoid error
+        if (rows.length > 0) {
+            sheet.getRange(2, 1, rows.length, 2).setValues(rows);
+        }
     }
 }
