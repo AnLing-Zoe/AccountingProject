@@ -184,7 +184,7 @@ const App: React.FC = () => {
         body: JSON.stringify(payload)
       });
 
-      alert('同步請求已發送！(因跨域限制無法直接確認結果，請檢查 Google Sheet)');
+      alert('請求已發送！(請檢查 Google Sheet)');
     } catch (error) {
       console.error('Sync failed:', error);
       alert('同步失敗，請檢查控制台');
@@ -207,15 +207,7 @@ const App: React.FC = () => {
                 <NavItem active={activeView === 'tracker'} onClick={() => setActiveView('tracker')} icon="✏️" label="收支紀錄" />
                 <NavItem active={activeView === 'calendar'} onClick={() => setActiveView('calendar')} icon="📅" label="月曆總覽" />
                 <NavItem active={activeView === 'savings'} onClick={() => setActiveView('savings')} icon="💰" label="365挑戰" />
-              </div>
-              <button
-                onClick={handleSyncToCloud}
-                className="ml-2 px-3 py-1.5 bg-white/50 hover:bg-white text-[#C9A690] rounded-lg text-sm font-bold border border-[#C9A690]/20 transition-all flex items-center gap-1.5"
-                title="同步至 Google Sheet"
-              >
-                <span>☁️</span>
-                <span className="hidden sm:inline">同步</span>
-              </button>
+              </div>             
             </div>
           </div>
         </div>
@@ -745,6 +737,16 @@ const SavingsChallenge: React.FC<{ savings: SavingsState; onToggle: (day: number
               className="text-[#C9A690] transition-all duration-1000 ease-out drop-shadow-[0_4px_10px_rgba(201,166,144,0.3)]"
             />
           </svg>
+          <div>
+           <button
+                onClick={handleSyncToCloud}
+                className="ml-2 px-3 py-1.5 bg-white/50 hover:bg-white text-[#C9A690] rounded-lg text-sm font-bold border border-[#C9A690]/20 transition-all flex items-center gap-1.5"
+                title="同步至 Google Sheet"
+              >
+                <span>☁️</span>
+                <span className="hidden sm:inline">同步</span>
+              </button>
+          </div>
           <div className="absolute inset-0 flex flex-col items-center justify-center">
             <span className="text-5xl font-black text-[#443730] tracking-tighter">{Math.round(progressPercent)}%</span>
             <span className="text-[11px] text-[#C9A690] font-black tracking-widest mt-1">累積進度</span>
