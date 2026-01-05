@@ -228,7 +228,7 @@ const App: React.FC = () => {
           />
         )}
         {activeView === 'calendar' && <MonthlyCalendar transactions={transactions} onDelete={removeTransaction} />}
-        {activeView === 'savings' && <SavingsChallenge savings={savings} onToggle={toggleSavingsDay} />}
+       {activeView === 'savings' && (  <SavingsChallenge savings={savings} onToggle={toggleSavingsDay} onSync={handleSyncToCloud}  />)}
       </main>
     </div>
   );
@@ -713,7 +713,11 @@ const MonthlyCalendar: React.FC<{ transactions: Transaction[]; onDelete: (id: st
   );
 };
 
-const SavingsChallenge: React.FC<{ savings: SavingsState; onToggle: (day: number) => void }> = ({ savings, onToggle }) => {
+const SavingsChallenge: React.FC<{ 
+  savings: SavingsState; 
+  onToggle: (day: number) => void;
+  onSync: () => void; // 增加這一行
+}> = ({ savings, onToggle, onSync }) => { // 這裡解構出 onSync
   const currentTotal = useMemo(() => savings.completedDays.reduce((a, b) => a + b, 0), [savings.completedDays]);
   const progressPercent = (currentTotal / TARGET_SAVINGS_AMOUNT) * 100;
 
