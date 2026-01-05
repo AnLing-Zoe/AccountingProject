@@ -208,14 +208,7 @@ const App: React.FC = () => {
                 <NavItem active={activeView === 'calendar'} onClick={() => setActiveView('calendar')} icon="📅" label="月曆總覽" />
                 <NavItem active={activeView === 'savings'} onClick={() => setActiveView('savings')} icon="💰" label="365挑戰" />
               </div>
-              <button
-                onClick={handleSyncToCloud}
-                className="ml-2 px-3 py-1.5 bg-white/50 hover:bg-white text-[#C9A690] rounded-lg text-sm font-bold border border-[#C9A690]/20 transition-all flex items-center gap-1.5"
-                title="同步至 Google Sheet"
-              >
-                <span>☁️</span>
-                <span className="hidden sm:inline">同步</span>
-              </button>
+              {/* Sync button moved to SavingsChallenge page */}
             </div>
           </div>
         </div>
@@ -236,7 +229,8 @@ const App: React.FC = () => {
           />
         )}
         {activeView === 'calendar' && <MonthlyCalendar transactions={transactions} onDelete={removeTransaction} />}
-        {activeView === 'savings' && <SavingsChallenge savings={savings} onToggle={toggleSavingsDay} />}
+        {activeView === 'calendar' && <MonthlyCalendar transactions={transactions} onDelete={removeTransaction} />}
+        {activeView === 'savings' && <SavingsChallenge savings={savings} onToggle={toggleSavingsDay} onSync={handleSyncToCloud} />}
       </main>
     </div>
   );
@@ -721,7 +715,7 @@ const MonthlyCalendar: React.FC<{ transactions: Transaction[]; onDelete: (id: st
   );
 };
 
-const SavingsChallenge: React.FC<{ savings: SavingsState; onToggle: (day: number) => void }> = ({ savings, onToggle }) => {
+const SavingsChallenge: React.FC<{ savings: SavingsState; onToggle: (day: number) => void; onSync: () => void }> = ({ savings, onToggle, onSync }) => {
   const currentTotal = useMemo(() => savings.completedDays.reduce((a, b) => a + b, 0), [savings.completedDays]);
   const progressPercent = (currentTotal / TARGET_SAVINGS_AMOUNT) * 100;
 
