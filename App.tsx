@@ -229,7 +229,7 @@ const App: React.FC = () => {
           />
         )}
         {activeView === 'calendar' && <MonthlyCalendar transactions={transactions} onDelete={removeTransaction} />}
-        {activeView === 'calendar' && <MonthlyCalendar transactions={transactions} onDelete={removeTransaction} />}
+
         {activeView === 'savings' && <SavingsChallenge savings={savings} onToggle={toggleSavingsDay} onSync={handleSyncToCloud} />}
       </main>
     </div>
@@ -569,6 +569,10 @@ const MonthlyCalendar: React.FC<{ transactions: Transaction[]; onDelete: (id: st
     return data;
   }, [transactions, currentYear, currentMonth]);
 
+  const monthlyTotal = useMemo(() => {
+    return Object.values(monthData).reduce((a: number, b: number) => a + b, 0);
+  }, [monthData]);
+
   const dayTransactions = useMemo(() => {
     if (selectedDay === null) return [];
     const yearMonthDay = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(selectedDay).padStart(2, '0')}`;
@@ -608,7 +612,12 @@ const MonthlyCalendar: React.FC<{ transactions: Transaction[]; onDelete: (id: st
               <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-[#C9A690]">▼</div>
             </div>
           </div>
-          <p className="text-[#C9A690] font-bold text-xs tracking-widest mt-1">當月結算</p>
+          <p className="text-[#C9A690] font-bold text-xs tracking-widest mt-1">
+            當月結算
+            <span className={`ml-2 text-lg ${monthlyTotal >= 0 ? 'text-[#357266]' : 'text-[#550C18]'}`}>
+              {monthlyTotal > 0 ? '+' : ''}{monthlyTotal.toLocaleString()}
+            </span>
+          </p>
         </div>
         <div className="flex gap-4">
           <button
@@ -657,6 +666,8 @@ const MonthlyCalendar: React.FC<{ transactions: Transaction[]; onDelete: (id: st
           </button>
         ))}
       </div>
+
+      <ExpensePieChart transactions={transactions} currentYear={currentYear} currentMonth={currentMonth} />
 
       {/* 單日詳情彈窗 */}
       {selectedDay !== null && (
@@ -714,6 +725,92 @@ const MonthlyCalendar: React.FC<{ transactions: Transaction[]; onDelete: (id: st
     </div>
   );
 };
+
+
+function ExpensePieChart({ transactions, currentYear, currentMonth }: { transactions: Transaction[]; currentYear: number; currentMonth: number }) {
+  const data = useMemo(() => {
+    const yearMonth = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}`;
+    const expenses = transactions.filter(t => t.type === 'expense' && t.date.startsWith(yearMonth));
+
+    if (expenses.length === 0) return [];
+
+    const grouped = expenses.reduce((acc, t) => {
+      acc[t.category] = (acc[t.category] || 0) + t.amount;
+      return acc;
+    }, {} as Record<string, number>);
+
+    const total = Object.values(grouped).reduce((a: number, b: number) => a + b, 0);
+
+    return Object.entries(grouped)
+      .map(([name, value]) => ({
+        name,
+        value,
+        percentage: (value / total) * 100
+      }))
+      .sort((a, b) => b.value - a.value);
+  }, [transactions, currentYear, currentMonth]);
+
+  const COLORS = ['#550C18', '#C9A690', '#357266', '#E6B89C', '#443730', '#9A8C98', '#F2E9E4', '#22223B'];
+
+  if (data.length === 0) return null;
+
+  let cumulativePercent = 0;
+
+  return (
+    <div className="mt-8 pt-8 border-t border-[#FFEECF]">
+      <h3 className="text-xl font-black text-[#443730] mb-6">本月支出佔比</h3>
+      <div className="flex flex-col md:flex-row items-center gap-8">
+        <div className="relative w-48 h-48 flex-shrink-0">
+          <svg viewBox="0 0 100 100" className="w-full h-full -rotate-90">
+            {data.map((item, i) => {
+              const startPercent = cumulativePercent;
+              const slicePercent = item.percentage;
+              cumulativePercent += slicePercent;
+
+              const r = 40;
+              const C = 2 * Math.PI * r;
+              const dashArray = `${(slicePercent / 100) * C} ${C}`;
+              const dashOffset = -((startPercent / 100) * C);
+
+              return (
+                <circle
+                  key={item.name}
+                  cx="50"
+                  cy="50"
+                  r={r}
+                  fill="transparent"
+                  stroke={COLORS[i % COLORS.length]}
+                  strokeWidth="20"
+                  strokeDasharray={dashArray}
+                  strokeDashoffset={dashOffset}
+                  className="transition-all duration-500 hover:opacity-90"
+                />
+              );
+            })}
+          </svg>
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+            <span className="text-xs font-black text-gray-400">支出分佈</span>
+          </div>
+        </div>
+
+        <div className="flex-1 grid grid-cols-2 gap-3 w-full">
+          {data.map((item, i) => (
+            <div key={item.name} className="flex items-center justify-between p-3 bg-gray-50 rounded-xl">
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 rounded-full" style={{ backgroundColor: COLORS[i % COLORS.length] }}></div>
+                <span className="text-sm font-bold text-[#443730]">{item.name}</span>
+              </div>
+              <div className="text-right">
+                <div className="text-sm font-black text-[#550C18]">${item.value.toLocaleString()}</div>
+                <div className="text-[10px] font-bold text-gray-400">{item.percentage.toFixed(1)}%</div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
 
 const SavingsChallenge: React.FC<{ savings: SavingsState; onToggle: (day: number) => void; onSync: () => void }> = ({ savings, onToggle, onSync }) => {
   const currentTotal = useMemo(() => savings.completedDays.reduce((a, b) => a + b, 0), [savings.completedDays]);
