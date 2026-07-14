@@ -37,6 +37,8 @@ jobs:
         run: pnpm install
       - name: Build
         run: pnpm build
+        env:
+          VITE_GOOGLE_APP_SCRIPT_URL: ${{ vars.GOOGLE_APP_SCRIPT_URL }}
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Upload artifact
