@@ -30,6 +30,14 @@ Start the development server:
 npm run dev
 ```
 
+Cloud sync is optional. Copy `.env.example` to `.env` and set your Apps Script web app URL:
+
+```env
+VITE_GOOGLE_APP_SCRIPT_URL=https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec
+```
+
+`.env` is local-only and must not be committed. Values prefixed with `VITE_` are embedded in the browser bundle, so never use them for secrets. Without this setting, the app stores data only in the browser's `localStorage`.
+
 ## Deployment
 
 The project is configured to automatically deploy to GitHub Pages when pushing to the `main` branch.
