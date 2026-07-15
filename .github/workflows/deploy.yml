@@ -30,13 +30,14 @@ jobs:
       - name: Set up Node
         uses: actions/setup-node@v4
         with:
-          node-version: 18
-      - name: Install PNPM
-        run: npm i -g pnpm
+          node-version: 20
+          cache: npm
       - name: Install dependencies
-        run: pnpm install
+        run: npm ci
+      - name: Type check
+        run: npm run typecheck
       - name: Build
-        run: pnpm build
+        run: npm run build
         env:
           VITE_GOOGLE_APP_SCRIPT_URL: ${{ vars.GOOGLE_APP_SCRIPT_URL }}
       - name: Setup Pages
@@ -46,7 +47,6 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          # Upload entire repository
           path: './dist'
       - name: Deploy to GitHub Pages
         id: deployment

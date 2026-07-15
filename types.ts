@@ -15,4 +15,14 @@ export interface SavingsState {
   completedDays: number[]; // Array of numbers from 1 to 365
 }
 
+export interface AppSnapshot {
+  transactions: Transaction[];
+  expenseCategories: string[];
+  incomeCategories: string[];
+  savings: SavingsState;
+  updatedAt: string;
+}
+
+export type SyncStatus = 'idle' | 'loading' | 'sending' | 'sent' | 'error';
+
 export type ViewType = 'tracker' | 'calendar' | 'savings';
