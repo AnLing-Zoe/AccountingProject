@@ -113,6 +113,9 @@ export default function MonthlyCalendar({ transactions, onDelete }: MonthlyCalen
               <div>
                 <h2 id="day-dialog-title" className="text-xl font-extrabold text-[var(--text)]">{year} 年 {month + 1} 月 {selectedDay} 日</h2>
                 <p className="text-sm text-[var(--text-muted)]">當日明細</p>
+                <p className={`mt-1 text-sm font-bold tabular-nums ${(totalsByDay[selectedDay] ?? 0) >= 0 ? 'text-[var(--success)]' : 'text-[var(--danger)]'}`}>
+                  當日盈餘：{formatCurrency(totalsByDay[selectedDay] ?? 0)}
+                </p>
               </div>
               <button type="button" autoFocus aria-label="關閉明細" className="icon-button" onClick={() => setSelectedDay(null)}>×</button>
             </header>
