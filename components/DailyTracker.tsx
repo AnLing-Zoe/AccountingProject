@@ -153,11 +153,11 @@ export default function DailyTracker({
           </fieldset>
 
           <div className="grid gap-4 sm:grid-cols-2">
-            <div>
+            <div className="min-w-0">
               <label htmlFor="transaction-date" className="field-label">日期</label>
               <input id="transaction-date" type="date" value={date} onChange={event => setDate(event.target.value)} className="field" required />
             </div>
-            <div>
+            <div className="min-w-0">
               <label htmlFor="transaction-category" className="field-label">類別</label>
               <select id="transaction-category" value={category} onChange={event => setCategory(event.target.value)} className="field" required>
                 <option value="" disabled>請選擇</option>
